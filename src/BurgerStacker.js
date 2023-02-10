@@ -1,10 +1,9 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import IngredientList from './IngredientList'
-import BurgerPane from './BurgerPane'
+import BurgerPane from './components/BurgerPane'
 
-export default class BurgerStacker extends Component {
-    state = {
-        ingredients: [
+const BurgerStacker = () => {
+    const ingredients = [
             {name: 'Kaiser Bun', color: 'saddlebrown'},
             {name: 'Sesame Bun', color: 'sandybrown'},
             {name: 'Gluten Free Bun', color: 'peru'},
@@ -18,65 +17,50 @@ export default class BurgerStacker extends Component {
             {name: 'Bacon', color: 'maroon'},
             {name: 'Onion', color: 'lightyellow'},
             {name: 'Cheese', color: 'gold'}
-        ],
-        burgerIngredients: []
+        ]
+        const [burgerIngredients, setBurgerIngredients] = useState([])
     }
 
     
-    addToStack = (e) => {
-        const ingName = e.target.innerText
-        const ingColor = e.target.style.backgroundColor
-        
-        console.log(`clicked on ${ingName} and it is ${ingColor}`)
+const addToStack = (e) => {
+    const ingName = e.target.innerText
+    const ingColor = e.target.style.backgroundColor
 
-        this.setState({
-            burgerIngredients: [
-                { name: ingName, color: ingColor },
-                ...this.state.burgerIngredients
-            ]
-        })
-    }
+    setBurgerIngredients(
+            [{ name: ingName, color: ingColor }, ...burgerIngredients]
+            
+    )
+}
 
     
-    removeFromStack = (e) => {
-        console.log('the original stack', this.state.burgerIngredients)
-        const clickIndex = e.target.id
-        console.log('the index of the item clicked', clickIndex)
-        
-        const currBurger = this.state.burgerIngredients.slice()
-        console.log('the current burger(copy)', currBurger)
-        
+const removeFromStack = (e) => {
+        const clickIndex = e.target.id        
+        const currBurger = burgerIngredients.slice()
         currBurger.splice(clickIndex, 1)
-        console.log('the copy after click', currBurger)
-        
-        this.setState({
-            burgerIngredients: currBurger
-        })
+                
+        setBurgerIngredients(currBurger)
     }
 
     
     clearBurger = () => {
-        this.setState({
-            burgerIngredients: []
-        })
+        setBurgerIngredients([])
     }
 
-    render () {
-        return (
-            <div>
-                <h1>Burger Stacker</h1>
-                <div className='panes'>
-                    <IngredientList 
-                        ingredients={this.state.ingredients}
-                        add={this.addToStack}
-                    />
-                    <BurgerPane
-                        ingredients={this.state.burgerIngredients}
-                        remove={this.removeFromStack}
-                        clear={this.clearBurger}
-                    />
-                </div>
+    return (
+        <div>
+            <h1>Burger Stacker</h1>
+            <div className='panes'>
+                <IngredientList 
+                    ingredients={ingredients}
+                    add={addToStack}
+                />
+                <BurgerPane
+                    ingredients={burgerIngredients}
+                    remove={removeFromStack}
+                    clear={clearBurger}
+                />
             </div>
-        )
-    }
-}
+        </div>
+    )
+
+export default BurgerStacker
